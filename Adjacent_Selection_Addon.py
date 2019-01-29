@@ -1,4 +1,4 @@
-23bl_info = {
+bl_info = {
     "name": "Adjacent Selection",
     "author": "Sergey Golubev",
     "version": (0, 1),
