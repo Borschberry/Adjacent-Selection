@@ -1,4 +1,4 @@
-bl_info = {
+23bl_info = {
     "name": "Adjacent Selection",
     "author": "Sergey Golubev",
     "version": (0, 1),
@@ -14,78 +14,73 @@ bl_info = {
 
 import bpy
 
-def adj_verts_sel():
+def adj_verts_sel():  # Selecting adjacent vertices
 
-    bpy.context.active_object.update_from_editmode()
-    start_sel = [v.index for v in bpy.context.active_object.data.vertices if v.select]
+    bpy.context.active_object.update_from_editmode()      
+    start_sel = [v.index for v in bpy.context.active_object.data.vertices if v.select] # store indexes of selected components
     
-    bpy.ops.mesh.select_more(use_face_step=False)
+    bpy.ops.mesh.select_more(use_face_step=False)   # select more
     bpy.context.active_object.update_from_editmode()
-    new_sel = [v.index for v in bpy.context.active_object.data.vertices if v.select]
+    new_sel = [v.index for v in bpy.context.active_object.data.vertices if v.select] # store indexes of new (bigger) selection
 
-    adj_sel = [v for v in new_sel if v not in start_sel]
-    bpy.ops.mesh.select_all(action='DESELECT')
+    adj_sel = [v for v in new_sel if v not in start_sel] # remove smaller (first) selection from bigger (after Select More)
+    bpy.ops.mesh.select_all(action='DESELECT') # deselect all components
     bpy.ops.object.mode_set(mode = 'OBJECT')
-    for v in adj_sel:
-        bpy.context.active_object.data.vertices[v].select = True
+    for v in adj_sel:                          # select new components
+        bpy.context.active_object.data.vertices[v].select = True 
     bpy.ops.object.mode_set(mode = 'EDIT') 
-    bpy.context.tool_settings.mesh_select_mode[0] = True
-    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='VERT')
+    bpy.context.tool_settings.mesh_select_mode[0] = True  # activate vertex selection mode
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='VERT') # switch to vertex selection mode
 
-def adj_edges_sel():
+def adj_edges_sel():  # Selecting adjacent edges
     bpy.context.active_object.update_from_editmode()
-    start_sel = [v.index for v in bpy.context.active_object.data.edges if v.select]
+    start_sel = [v.index for v in bpy.context.active_object.data.edges if v.select] # store indexes of selected components
     
-    bpy.ops.mesh.select_more(use_face_step=False)
+    bpy.ops.mesh.select_more(use_face_step=False)   # select more
     bpy.context.active_object.update_from_editmode()
-    new_sel = [v.index for v in bpy.context.active_object.data.edges if v.select]
+    new_sel = [v.index for v in bpy.context.active_object.data.edges if v.select] # store indexes of new (bigger) selection
 
-    adj_sel = [v for v in new_sel if v not in start_sel]
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    for v in adj_sel:
+    adj_sel = [v for v in new_sel if v not in start_sel] # remove smaller (first) selection from bigger (after Select More)
+    bpy.ops.mesh.select_all(action='DESELECT') # deselect all components
+    bpy.ops.object.mode_set(mode = 'OBJECT')   
+    for v in adj_sel:                          # select new components
         bpy.context.active_object.data.edges[v].select = True
     bpy.ops.object.mode_set(mode = 'EDIT') 
-    bpy.context.tool_settings.mesh_select_mode[1] = True
-    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
+    bpy.context.tool_settings.mesh_select_mode[1] = True # activate edges selection mode
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE') # switch to edge selection mode
 
-def adj_faces_sel():
+def adj_faces_sel():  # Selecting adjacent polygons
     bpy.context.active_object.update_from_editmode()
-    if len([v for v in bpy.context.active_object.data.polygons if v.select]) > 0:
+    if len([v for v in bpy.context.active_object.data.polygons if v.select]) > 0: # if at least 1 polygon selected
         bpy.context.active_object.update_from_editmode()
-        start_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select]
+        start_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select] # store indexes of selected components
     
-        bpy.ops.mesh.select_more(use_face_step=False)
+        bpy.ops.mesh.select_more(use_face_step=False)   # select more
         bpy.context.active_object.update_from_editmode()
-        new_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select]
+        new_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select] # store indexes of new (bigger) selection
 
-        adj_sel = [v for v in new_sel if v not in start_sel]
-        bpy.ops.mesh.select_all(action='DESELECT')
+        adj_sel = [v for v in new_sel if v not in start_sel] # remove smaller (first) selection from bigger (after Select More)
+        bpy.ops.mesh.select_all(action='DESELECT') # deselect all components
         bpy.ops.object.mode_set(mode = 'OBJECT')
-        for v in adj_sel:
+        for v in adj_sel:                          # select new components
+            bpy.context.active_object.data.polygons[v].select = True 
+        bpy.ops.object.mode_set(mode = 'EDIT')
+    else:      # if no polygons selected          
+        bpy.context.active_object.update_from_editmode()
+        start_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select] # store indexes of selected components
+    
+        bpy.ops.mesh.select_more()   # select more
+        bpy.context.active_object.update_from_editmode()
+        new_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select] # store indexes of new (bigger) selection
+ 
+        adj_sel = [v for v in new_sel if v not in start_sel] # remove smaller (first) selection from bigger (after Select More)
+        bpy.ops.mesh.select_all(action='DESELECT') # deselect all components
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        for v in adj_sel:                          # select new components
             bpy.context.active_object.data.polygons[v].select = True
         bpy.ops.object.mode_set(mode = 'EDIT')
-    else:
-        bpy.context.active_object.update_from_editmode()
-        start_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select]
-    
-        bpy.ops.mesh.select_more()
-        bpy.context.active_object.update_from_editmode()
-        new_sel = [v.index for v in bpy.context.active_object.data.polygons if v.select]
-
-        adj_sel = [v for v in new_sel if v not in start_sel]
-        bpy.ops.mesh.select_all(action='DESELECT')
-        bpy.ops.object.mode_set(mode = 'OBJECT')
-        for v in adj_sel:
-            bpy.context.active_object.data.polygons[v].select = True
-        bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.context.tool_settings.mesh_select_mode[2] = True
-    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
-    
-adj_edges_sel()
-print('1')
-
-print('2')
+    bpy.context.tool_settings.mesh_select_mode[2] = True # activate polygons selection mode
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE') # switch to polygons selection mode
     
 ### MAIN PART OF ADDON ENDS HERE
 
